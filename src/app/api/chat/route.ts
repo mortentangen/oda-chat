@@ -1,39 +1,45 @@
 import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
+import { z } from 'zod';
+import { getCart } from './odaApi';
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  const result = streamText({
-    model: openai('gpt-4o'),
-    system: 'You are a helpful assistant.',
-    messages
-  });
-
-//  const result = streamText({
-//    model: openai('gpt-4o'),
-//    messages,
-//    tools: {
-//      getUserInfo: {
-//        description: 'Hent brukerinfo basert på ID',
-//        parameters: {
-//          type: 'object',
-//          properties: {
-//            userId: { type: 'integer', description: 'ID på brukeren' }
-//          },
-//          required: ['userId']
+  try {
+    const result = streamText({
+      model: openai('gpt-4o'),
+      system: 'Du er en assistent for handling hos Oda. Du kan typisk liste ut handlekurv, legge til ordre, etc',
+      messages,
+      tools: {
+//        getUserInfo: {
+//          description: 'Hent brukerinfo basert på ID',
+//          parameters: z.object({
+//            userId: z.number().int().describe('ID på brukeren')
+//          }),
+//          execute: async ({ userId }) => {
+//            console.log('Fetching user', userId);
+//            const res = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+//            const user = await res.json();
+//            console.log(user);
+//            return { name: user.name, email: user.email };
+//          }
 //        },
-//        execute: async ({ userId }) => {
-//          const res = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
-//          console.log('res', res);
-//          const user = await res.json();
-//          return { name: user.name, email: user.email };
-//        }
-//      }
-//    },
-//    toolChoice: 'auto'
-//  });
-//console.log('result', result);
+        getOdaHandleliste: {
+          description: 'Hent handlelisten min fra Oda',
+          parameters: z.object({}), // ingen ekstra parametere
+          execute: getCart
+        }
 
-  return result.toDataStreamResponse();
+      },
+      toolChoice: 'auto'
+    });
+
+//    const text = await result.text;
+//    return new Response(text);
+    return result.toDataStreamResponse();
+  } catch (e) {
+    console.error('Feil i generateText:', e);
+    return new Response('Intern feil: ' + (e instanceof Error ? e.message : String(e)), { status: 500 });
+  }
 }
