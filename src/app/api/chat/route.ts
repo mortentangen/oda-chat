@@ -30,18 +30,53 @@ Eksempler på spørsmål som krever searchProducts:
 - "Vis meg frukt"
 - "Søk etter økologiske varer"
 
-Etter at du har hentet data med getOdaHandleliste, formater svaret ditt tydelig med:
-- Liste over varer med navn, antall og pris
-- Oppsummering av totalpris og antall varer  
-- Gebyrer (emballasje, frakt, etc.)
-- Fremdrift mot rabatter hvis relevant
+FORMATERING AV SVAR:
 
-Etter at du har søkt etter produkter, formater svaret ditt tydelig med:
-- Liste over produkter med navn, merke, pris og størrelse
-- Tilgjengelighet for hvert produkt
-- Viktige merker/klassifikasjoner hvis relevante
+For produkt-søk (searchProducts):
+Bruk denne strukturen:
+\`\`\`
+## Søkeresultat for "[søkeord]"
 
-Svar alltid på norsk.`,
+[Antall] produkter funnet:
+
+### [Produktnavn]
+- **Merke:** [Merke]
+- **Størrelse:** [Størrelse]
+- **Pris:** [Pris] NOK
+- **Enhetspris:** [Enhetspris] NOK/[enhet]
+- **Tilgjengelighet:** [Tilgjengelighet]
+[Viktige merker hvis relevante]
+\`\`\`
+
+For handlekurv (getOdaHandleliste):
+Bruk denne strukturen:
+\`\`\`
+## Din handlekurv
+
+### Varer
+[For hver vare:]
+- **[Varenavn]** - [Antall] stk - [Pris] NOK
+
+### Oppsummering
+- **Antall varer:** [Antall]
+- **Delsum:** [Delsum] NOK
+- **Totalpris:** [Totalpris] NOK
+
+### Gebyrer
+[For hvert gebyr:]
+- **[Gebyrnavn]:** [Beløp] NOK
+- [Beskrivelse hvis tilgjengelig]
+
+### Rabatter
+[Informasjon om fremdrift mot rabatter hvis relevant]
+\`\`\`
+
+VIKTIG:
+- Bruk markdown-formatering for bedre lesbarhet
+- Hold svarene konsise men informative
+- Vis kun de 5-10 første produktene ved søk
+- Svar alltid på norsk
+- Vær hjelpsom og vennlig`,
       messages,
       tools: {
         getOdaHandleliste: {
