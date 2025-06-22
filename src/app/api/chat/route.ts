@@ -70,8 +70,6 @@ Bruk et format som dette, med en blank linje mellom hvert produkt:
           execute: emptyCart
         }
       },
-      onStepFinish: (step: any) => {
-      },
       maxSteps: 5,
       toolChoice: 'auto'
     });

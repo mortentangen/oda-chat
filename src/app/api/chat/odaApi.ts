@@ -1,4 +1,4 @@
-import { log } from "console";
+import { Product, SimpleGroup, SimpleItem } from "../types";
 
 export const getCart = async () => {
     const cookie = process.env.ODA_COOKIE as string;
@@ -12,7 +12,7 @@ export const getCart = async () => {
     const fullResponse = await res.json();
 
     const simplifiedCart = {
-        items: fullResponse.groups?.[0]?.items?.map((item: any) => ({
+        items: fullResponse.groups?.[0]?.items?.map((item: SimpleItem) => ({
             name: item.product.full_name,
             quantity: item.quantity,
             price: item.display_price_total,
@@ -25,7 +25,7 @@ export const getCart = async () => {
             total: fullResponse.total_gross_amount,
             currency: fullResponse.currency
         },
-        fees: fullResponse.extra_lines?.map((line: any) => ({
+        fees: fullResponse.extra_lines?.map((line: Record<string, string>) => ({
             description: line.description,
             amount: line.gross_amount,
             long_description: line.long_description
@@ -54,7 +54,7 @@ export const searchProducts = async (query: string) => {
     const simplifiedResults = {
         query: query,
         total_results: fullResponse.items?.length || 0,
-        products: fullResponse.items?.map((item: any) => {
+        products: fullResponse.items?.map((item: Product) => {
             const product = item.attributes;
             return {
                 id: product.id,
@@ -70,10 +70,10 @@ export const searchProducts = async (query: string) => {
                     description: product.availability?.description
                 },
                 url: product.front_url,
-                badges: product.client_classifiers?.map((badge: any) => ({
+                badges: product.client_classifiers?.map((badge: Record<string, unknown>) => ({
                     name: badge.name,
                     is_important: badge.is_important
-                })).filter((badge: any) => badge.is_important) || []
+                })).filter((badge: Record<string, unknown>) => badge.is_important) || []
             };
         }) || []
     };
@@ -98,8 +98,8 @@ export const addToCart = async (productId: number, quantity: number = 1) => {
         });
         const fullResponse = await res.json();
 
-        const simplifiedResult = (fullResponse.groups || []).flatMap((group: any) =>
-            (group.items || []).map((item: any) => {
+        const simplifiedResult = (fullResponse.groups || []).flatMap((group: SimpleGroup) =>
+            (group.items || []).map((item) => {
               const p = item.product;
               return {
                 id: p.id,
@@ -126,7 +126,7 @@ export const addToCart = async (productId: number, quantity: number = 1) => {
 
 export const emptyCart = async () => {
     const cookie = process.env.ODA_COOKIE as string;
-    const result = await fetch(`https://oda.com/tienda-web-api/v1/cart/clear/`, {
+    await fetch(`https://oda.com/tienda-web-api/v1/cart/clear/`, {
         method: 'POST',
         headers: new Headers({
             'Cookie': cookie,
