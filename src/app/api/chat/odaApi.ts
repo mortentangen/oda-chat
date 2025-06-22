@@ -1,3 +1,5 @@
+import { log } from "console";
+
 export const getCart = async () => {
     const cookie = process.env.ODA_COOKIE as string;
     const res = await fetch('https://oda.com/tienda-web-api/v1/cart/', {
@@ -80,19 +82,56 @@ export const searchProducts = async (query: string) => {
 }
 
 export const addToCart = async (productId: number, quantity: number = 1) => {
+    try {
+        const cookie = process.env.ODA_COOKIE as string;
+        const res = await fetch(`https://oda.com/tienda-web-api/v1/cart/items/`, {
+            method: 'POST',
+            body: JSON.stringify({
+                items: [
+                    { product_id: productId, quantity }
+                ]
+            }),
+            headers: new Headers({
+                'Cookie': cookie,
+                'Accept': 'application/json'
+            })
+        });
+        const fullResponse = await res.json();
+
+        const simplifiedResult = (fullResponse.groups || []).flatMap((group: any) =>
+            (group.items || []).map((item: any) => {
+              const p = item.product;
+              return {
+                id: p.id,
+                name: p.name,
+                nameExtra: p.name_extra,
+                brand: p.brand,
+                priceNOK: parseFloat(p.gross_price),
+                quantity: item.quantity,
+                imageUrl: p.images?.[0]?.thumbnail?.url,
+                productUrl: p.front_url,
+              };
+            })
+          );
+
+          console.log(simplifiedResult);
+          
+        return simplifiedResult;
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        throw error;
+    }
+
+}
+
+export const emptyCart = async () => {
     const cookie = process.env.ODA_COOKIE as string;
-    const res = await fetch(`https://oda.com/tienda-web-api/v1/cart/items/`, {
+    const result = await fetch(`https://oda.com/tienda-web-api/v1/cart/clear/`, {
         method: 'POST',
-        body: JSON.stringify({
-            items: [
-                { productId, quantity }
-            ]
-        }),
         headers: new Headers({
             'Cookie': cookie,
             'Accept': 'application/json'
         })
     });
-    const fullResponse = await res.json();
-    return fullResponse;
+    return "Handlekurven er tom";
 }

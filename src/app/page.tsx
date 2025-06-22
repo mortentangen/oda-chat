@@ -78,7 +78,7 @@ export default function Chat() {
           )}
           
           {messages.map((m) => (
-            <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div key={m.id} className={`flex py-1 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-3xl p-4 rounded-2xl shadow-sm ${
                 m.role === 'user' 
                   ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 

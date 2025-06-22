@@ -1,7 +1,7 @@
 import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { z } from 'zod';
-import { getCart, searchProducts, addToCart } from './odaApi';
+import { getCart, searchProducts, addToCart, emptyCart } from './odaApi';
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -15,7 +15,7 @@ VIKTIG: Når brukeren spør om handlekurv, handleliste, varer, priser, eller hva
 
 Når brukeren spør om å søke etter produkter, søk etter matvarer, eller vil finne spesifikke varer - BRUK ALLTID searchProducts tool-et.
 
-Når brukeren ber om å legge til produkter i handlekurven - BRUK ALLTID addToCart tool-et med produktets ID fra et tidligere søk.
+Når brukeren ber om å legge til eller fjerne produkter i handlekurven - BRUK ALLTID addToCart tool-et med produktets ID fra et tidligere søk.
 
 Eksempler på spørsmål som krever getOdaHandleliste:
 - "Hva har jeg i handlekurven?"
@@ -37,6 +37,14 @@ Eksempler på spørsmål som krever addToCart:
 - "Jeg vil ha 2 stk melk"
 - "Legg til brød"
 - "Kjøp 3 stk epler"
+- "Fjern smør fra handlekurven"
+- "Oppdater antall smør til 2 stk"
+
+Eksempler på spørsmål som krever emptyCart:
+- "Tøm handlekurven"
+- "Fjern alt fra handlekurven"
+- "Slett alt fra handlekurven"
+- "Fjern alle varer"
 
 FORMATERING AV SVAR:
 
@@ -113,14 +121,19 @@ VIKTIG:
           }
         },
         addToCart: {
-          description: 'Legg til et produkt i handlekurven. Bruk denne når brukeren ber om å legge til spesifikke produkter i handlekurven. Du må ha produktets ID fra et tidligere produkt-søk.',
+          description: 'Legg til eller fjern et produkt fra handlekurven. Bruk denne når brukeren ber om å legge til eller fjerne spesifikke produkter i handlekurven. Du må ha produktets ID fra et tidligere produkt-søk. Skal alt slettes må antallet hentes fra getOdaHandleliste tool-et først.',
           parameters: z.object({
             productId: z.number().describe('Produktets ID (må være et tall)'),
-            quantity: z.number().default(1).describe('Antall av produktet å legge til (standard: 1)')
+            quantity: z.number().default(1).describe('Antall av produktet å legge til (standard: 1). Fjerning av produkt gjøres ved å sette negativ quantity, f.eks. quantity: -1. Skal alt slettes må antallet som skal slettes hentes fra handlekurven først.')
           }),
           execute: async ({ productId, quantity }) => {
             return await addToCart(productId, quantity);
           }
+        },
+        emptyCart: {
+          description: 'Tøm handlekurven. Bruk denne når brukeren ber om å tømme handlekurven.',
+          parameters: z.object({}),
+          execute: emptyCart
         }
       },
       onStepFinish: (step) => {
