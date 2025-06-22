@@ -4,7 +4,6 @@
   "description": "An intelligent chat assistant integrated with Oda for shopping tasks, built with Next.js, Vercel AI SDK, and Tailwind CSS",
   "private": true,
   "keywords": [
-    "oda",
     "shopping",
     "chat",
     "ai",
