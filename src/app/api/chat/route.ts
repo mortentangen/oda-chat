@@ -1,7 +1,7 @@
 import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { z } from 'zod';
-import { getCart, searchProducts } from './odaApi';
+import { getCart, searchProducts, addToCart } from './odaApi';
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -14,6 +14,8 @@ export async function POST(req: Request) {
 VIKTIG: Når brukeren spør om handlekurv, handleliste, varer, priser, eller hva som er i kurven - BRUK ALLTID getOdaHandleliste tool-et for å hente oppdatert informasjon. Ikke gjett eller svar basert på tidligere informasjon.
 
 Når brukeren spør om å søke etter produkter, søk etter matvarer, eller vil finne spesifikke varer - BRUK ALLTID searchProducts tool-et.
+
+Når brukeren ber om å legge til produkter i handlekurven - BRUK ALLTID addToCart tool-et med produktets ID fra et tidligere søk.
 
 Eksempler på spørsmål som krever getOdaHandleliste:
 - "Hva har jeg i handlekurven?"
@@ -29,6 +31,12 @@ Eksempler på spørsmål som krever searchProducts:
 - "Hva koster brød?"
 - "Vis meg frukt"
 - "Søk etter økologiske varer"
+
+Eksempler på spørsmål som krever addToCart:
+- "Legg til smør i handlekurven"
+- "Jeg vil ha 2 stk melk"
+- "Legg til brød"
+- "Kjøp 3 stk epler"
 
 FORMATERING AV SVAR:
 
@@ -71,12 +79,23 @@ Bruk denne strukturen:
 [Informasjon om fremdrift mot rabatter hvis relevant]
 \`\`\`
 
+For å legge til produkter (addToCart):
+Bruk denne strukturen:
+\`\`\`
+## Produkt lagt til i handlekurv
+
+✅ **[Produktnavn]** - [Antall] stk lagt til i handlekurven
+
+[Oppdatert handlekurv-informasjon hvis relevant]
+\`\`\`
+
 VIKTIG:
 - Bruk markdown-formatering for bedre lesbarhet
 - Hold svarene konsise men informative
 - Vis kun de 5-10 første produktene ved søk
 - Svar alltid på norsk
-- Vær hjelpsom og vennlig`,
+- Vær hjelpsom og vennlig
+- Når du legger til produkter, bruk produktets ID fra et tidligere søk`,
       messages,
       tools: {
         getOdaHandleliste: {
@@ -92,10 +111,19 @@ VIKTIG:
           execute: async ({ query }) => {
             return await searchProducts(query);
           }
+        },
+        addToCart: {
+          description: 'Legg til et produkt i handlekurven. Bruk denne når brukeren ber om å legge til spesifikke produkter i handlekurven. Du må ha produktets ID fra et tidligere produkt-søk.',
+          parameters: z.object({
+            productId: z.number().describe('Produktets ID (må være et tall)'),
+            quantity: z.number().default(1).describe('Antall av produktet å legge til (standard: 1)')
+          }),
+          execute: async ({ productId, quantity }) => {
+            return await addToCart(productId, quantity);
+          }
         }
       },
       onStepFinish: (step) => {
-        console.log('FINISHED STEP', JSON.stringify(step, null, 2));
       },
       maxSteps: 5,
       toolChoice: 'auto'

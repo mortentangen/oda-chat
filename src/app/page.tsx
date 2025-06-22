@@ -20,7 +20,6 @@ export default function Chat() {
     }
   };
 
-  // Scroll immediately when messages change
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       scrollToBottom();
@@ -29,7 +28,6 @@ export default function Chat() {
     return () => clearTimeout(timeoutId);
   }, [messages]);
 
-  // Also scroll when the chat container changes (for streaming text)
   useEffect(() => {
     const observer = new MutationObserver(() => {
       scrollToBottom();
@@ -49,9 +47,7 @@ export default function Chat() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
-      // Force immediate scroll to bottom before submitting
       scrollToBottom();
-      // Small delay to ensure scroll happens before message is added
       setTimeout(() => {
         handleSubmit(e);
       }, 10);
@@ -60,7 +56,6 @@ export default function Chat() {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Header */}
       <div className="p-6 border-b border-gray-200 bg-white/80 backdrop-blur-sm shadow-sm">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -72,7 +67,6 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Chat messages - scrollable area */}
       <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-6 space-y-8">
         <div className="max-w-4xl mx-auto">
           {messages.length === 0 && (
@@ -162,12 +156,10 @@ export default function Chat() {
               </div>
             </div>
           ))}
-          {/* Invisible div for auto-scroll */}
           <div ref={messagesEndRef} />
         </div>
       </div>
 
-      {/* Input form - always at bottom */}
       <div className="p-6 border-t border-gray-200 bg-white/80 backdrop-blur-sm shadow-lg">
         <div className="max-w-4xl mx-auto">
           <form onSubmit={handleFormSubmit} className="flex gap-3">

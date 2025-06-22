@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Oda Shopping Assistant
 
-## Getting Started
+En intelligent chat-assistent integrert med Oda for shopping-oppgaver, bygget med Next.js, Vercel AI SDK og Tailwind CSS.
 
-First, run the development server:
+## 🛒 Funksjoner
 
+- **Produktsøk**: Søk etter produkter på Oda med naturlig språk
+- **Handlekurv-håndtering**: Se innhold, priser og gebyrer i handlekurven
+- **Legg til produkter**: Legg produkter direkte til handlekurven via chat
+- **Streaming responses**: Sanntids svar med AI SDK
+
+## 🚀 Kom i gang
+
+### Forutsetninger
+
+- Node.js 18+ 
+- Oda-konto med tilgang til API
+
+### Installasjon
+
+1. Klon repositoriet:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd oda-chat
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Installer avhengigheter:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Opprett `.env.local` fil:
+```bash
+ODA_COOKIE=din_oda_cookie_her
+OPENAI_API_KEY=din_openai_api_key_her
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Start utviklingsserveren:
+```bash
+npm run dev
+```
 
-## Learn More
+5. Åpne [http://localhost:3000](http://localhost:3000) i nettleseren
 
-To learn more about Next.js, take a look at the following resources:
+## 🔧 Konfigurasjon
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Miljøvariabler
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Opprett en `.env.local` fil i prosjektroten:
 
-## Deploy on Vercel
+```env
+ODA_COOKIE=din_oda_cookie_her
+OPENAI_API_KEY=din_openai_api_key_her
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Hvordan få ODA_COOKIE:**
+1. Logg inn på [oda.com](https://oda.com)
+2. Åpne Developer Tools (F12)
+3. Gå til Network-fanen
+4. Gjør en handling på siden (f.eks. søk etter et produkt)
+5. Finn en request til `oda.com` og kopier Cookie-headeren
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Hvordan få OPENAI_API_KEY:**
+1. Gå til [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Logg inn eller opprett en konto
+3. Klikk "Create new secret key"
+4. Kopier API-nøkkelen (starter med `sk-`)
+
+## 🛠️ Teknisk Stack
+
+- **Frontend**: Next.js 15, React, TypeScript
+- **Styling**: Tailwind CSS
+- **AI**: Vercel AI SDK med OpenAI GPT-4
+- **Markdown**: react-markdown
+- **Testing**: Jest
+
+## 🧪 Testing
+
+Kjør tester:
+```bash
+npm test
+```
+
+## 📝 Bruk
+
+### Eksempel-spørsmål
+
+**Produktsøk:**
+- "Søk etter smør"
+- "Finn melk"
+- "Hva koster brød?"
+
+**Handlekurv:**
+- "Hva har jeg i handlekurven?"
+- "Hvor mye koster det?"
+- "List ut handlelisten"
+
+**Legg til produkter:**
+- "Legg til smør i handlekurven"
+- "Jeg vil ha 2 stk melk"
+- "Kjøp 3 stk epler"
+
+## 🔒 Sikkerhet
+
+- **Ikke commit miljøvariabler**: `.env*` filer er ekskludert fra git
+- **API-nøkler**: Hold ODA_COOKIE sikker og ikke del den
+- **Rate limiting**: Respekter Oda's API-begrensninger
+
+## 🤝 Bidrag
+
+1. Fork prosjektet
+2. Opprett en feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit endringene (`git commit -m 'Add some AmazingFeature'`)
+4. Push til branchen (`git push origin feature/AmazingFeature`)
+5. Opprett en Pull Request
+
+## 📄 Lisens
+
+Dette prosjektet er lisensiert under MIT License - se [LICENSE](LICENSE) filen for detaljer.
+
+## ⚠️ Disclaimer
+
+Dette er et uoffisielt prosjekt og er ikke tilknyttet Oda. Bruk på egen risiko og respekter Oda's brukervilkår.

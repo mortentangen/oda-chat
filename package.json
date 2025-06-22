@@ -1,7 +1,24 @@
 {
-  "name": "oda-chat",
+  "name": "oda-shopping-assistant",
   "version": "0.1.0",
+  "description": "An intelligent chat assistant integrated with Oda for shopping tasks, built with Next.js, Vercel AI SDK, and Tailwind CSS",
   "private": true,
+  "keywords": [
+    "oda",
+    "shopping",
+    "chat",
+    "ai",
+    "assistant",
+    "nextjs",
+    "typescript",
+    "tailwindcss"
+  ],
+  "author": "Morten Tangen",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mortentangen/oda-shopping-assistant.git"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",

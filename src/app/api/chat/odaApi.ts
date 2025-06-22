@@ -1,5 +1,3 @@
-import { log } from "console";
-
 export const getCart = async () => {
     const cookie = process.env.ODA_COOKIE as string;
     const res = await fetch('https://oda.com/tienda-web-api/v1/cart/', {
@@ -11,7 +9,6 @@ export const getCart = async () => {
     });
     const fullResponse = await res.json();
 
-    // Strippe ned responsen til kun nødvendig informasjon
     const simplifiedCart = {
         items: fullResponse.groups?.[0]?.items?.map((item: any) => ({
             name: item.product.full_name,
@@ -38,12 +35,10 @@ export const getCart = async () => {
         } : null
     };
 
-    console.log(JSON.stringify(simplifiedCart, null, 2));
     return simplifiedCart;
 };
 
 export const searchProducts = async (query: string) => {
-    console.log('Searching for products:', query);
     const cookie = process.env.ODA_COOKIE as string;
     const res = await fetch(`https://oda.com/tienda-web-api/v1/search/mixed/?q=${query}&type=product`, {
         method: 'GET',
@@ -53,8 +48,7 @@ export const searchProducts = async (query: string) => {
         })
     });
     const fullResponse = await res.json();
-    
-    // Forenkle responsen til kun nødvendig informasjon
+
     const simplifiedResults = {
         query: query,
         total_results: fullResponse.items?.length || 0,
@@ -74,7 +68,6 @@ export const searchProducts = async (query: string) => {
                     description: product.availability?.description
                 },
                 url: product.front_url,
-                // Kun viktige merker/klassifikasjoner
                 badges: product.client_classifiers?.map((badge: any) => ({
                     name: badge.name,
                     is_important: badge.is_important
@@ -82,12 +75,11 @@ export const searchProducts = async (query: string) => {
             };
         }) || []
     };
-    
-    console.log(JSON.stringify(simplifiedResults, null, 2));
+
     return simplifiedResults;
 }
 
-export const addToCart = async (productId: string, quantity: number) => {
+export const addToCart = async (productId: number, quantity: number = 1) => {
     const cookie = process.env.ODA_COOKIE as string;
     const res = await fetch(`https://oda.com/tienda-web-api/v1/cart/items/`, {
         method: 'POST',
@@ -102,6 +94,5 @@ export const addToCart = async (productId: string, quantity: number) => {
         })
     });
     const fullResponse = await res.json();
-    console.log(JSON.stringify(fullResponse, null, 2));
     return fullResponse;
 }
