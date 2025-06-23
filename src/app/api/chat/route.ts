@@ -50,9 +50,7 @@ Bruk et format som dette, med en blank linje mellom hvert produkt:
           parameters: z.object({
             query: z.string().describe('Søkeord for å finne produkter (f.eks. "smør", "melk")')
           }),
-          execute: async ({ query }: { query: string }) => {
-            return await searchProducts(query);
-          }
+          execute: ({ query }: { query: string }) => searchProducts(query)
         },
         addToCart: {
           description: 'Legger til eller fjerner et produkt fra handlekurven. Krever produkt-ID fra et søk.',
@@ -60,9 +58,7 @@ Bruk et format som dette, med en blank linje mellom hvert produkt:
             productId: z.number().describe('Produktets ID (må være et tall)'),
             quantity: z.number().default(1).describe('Antall som skal legges til. Bruk negativt tall for å fjerne.')
           }),
-          execute: async ({ productId, quantity }: { productId: number, quantity: number }) => {
-            return await addToCart(productId, quantity);
-          }
+          execute: ({ productId, quantity }: { productId: number, quantity: number }) => addToCart(productId, quantity)
         },
         emptyCart: {
           description: 'Tømmer hele handlekurven.',
