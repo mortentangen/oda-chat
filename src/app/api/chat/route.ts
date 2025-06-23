@@ -6,8 +6,8 @@ import { getCart, searchProducts, addToCart, emptyCart } from './odaApi';
 export const POST = async (req: Request) => {
   const { messages } = await req.json();
 
-  // Keep only the last 6 messages to save on tokens
-  const recentMessages = messages.slice(-1);
+  // Keep only the last 2 messages in history to save on tokens
+  const recentMessages = messages.slice(-2);
 
   try {
     const result = streamText({
