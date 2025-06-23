@@ -91,10 +91,10 @@ const Chat = () => {
               
               {messages.map((m) => (
                 <div key={m.id} className={`flex py-1 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-3xl p-4 rounded-2xl shadow-sm ${
+                  <div className={`max-w-3xl p-4 rounded-2xl shadow-sm w-11/12 sm:w-3/4 ${
                     m.role === 'user' 
                       ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 
-                      : 'bg-white border border-gray-200 shadow-lg w-3/4'
+                      : 'bg-white border border-gray-200 shadow-lg'
                   }`}>
                     <div className={`prose prose-sm max-w-none ${
                       m.role === 'user' ? 'prose-invert' : ''
