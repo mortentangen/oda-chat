@@ -58,12 +58,12 @@ const Chat = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="p-6 border-b border-gray-200 bg-white/80 backdrop-blur-sm shadow-sm">
         <div className="max-w-4xl mx-auto grid grid-cols-6 items-center">
           <div className="col-span-1" />
 
-          <div className="col-span-4">
+          <div className={`col-span-4 ${!session?.user ? "text-center" : ""}`}>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Oda Shopping Assistant
             </h1>
@@ -86,7 +86,7 @@ const Chat = () => {
 
       {!session?.user && (
         <div className="flex-1 flex flex-col items-center justify-center text-center">
-            <h2 className="text-2xl font-bold mb-4">Vennligst logg inn</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Vennligst logg inn</h2>
             <p className="mb-8 text-gray-600">Du må være logget inn for å bruke chat-assistenten.</p>
             <LoginButton />
         </div>
@@ -188,7 +188,7 @@ const Chat = () => {
                 <input
                   value={input}
                   onChange={handleInputChange}
-                  className="flex-1 border border-gray-300 rounded-xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm text-lg"
+                  className="flex-1 border border-gray-300 rounded-xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm text-lg text-gray-900"
                   placeholder="Søk etter produkter eller spør om handlekurven..."
                 />
                 <button 
