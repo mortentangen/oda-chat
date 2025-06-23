@@ -3,10 +3,10 @@ import { openai } from '@ai-sdk/openai';
 import { z } from 'zod';
 import { getCart, searchProducts, addToCart, emptyCart } from './odaApi';
 
-export async function POST(req: Request) {
+export const POST = async (req: Request) => {
   const { messages } = await req.json();
 
-  // Keep only the last n messages to save on tokens
+  // Keep only the last 6 messages to save on tokens
   const recentMessages = messages.slice(-1);
 
   try {
@@ -79,4 +79,4 @@ Bruk et format som dette, med en blank linje mellom hvert produkt:
     console.error('Feil i generateText:', e);
     return new Response('Intern feil: ' + (e instanceof Error ? e.message : String(e)), { status: 500 });
   }
-}
+};

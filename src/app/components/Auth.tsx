@@ -4,11 +4,11 @@ import { SessionProvider, useSession, signIn, signOut } from "next-auth/react";
 import React, { useState } from "react";
 import Image from "next/image";
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return <SessionProvider>{children}</SessionProvider>;
-}
+};
 
-export function LoginButton() {
+export const LoginButton = () => {
   return (
     <button
       onClick={() => signIn("google")}
@@ -17,9 +17,9 @@ export function LoginButton() {
       Logg inn med Google
     </button>
   );
-}
+};
 
-export function UserMenu() {
+export const UserMenu = () => {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -65,4 +65,4 @@ export function UserMenu() {
       )}
     </div>
   );
-} 
+}; 
