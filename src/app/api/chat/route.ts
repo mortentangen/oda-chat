@@ -66,7 +66,7 @@ Bruk et format som dette, med en blank linje mellom hvert produkt:
           execute: emptyCart
         }
       },
-      maxSteps: 5,
+      maxSteps: 7,
       toolChoice: 'auto'
     });
 
