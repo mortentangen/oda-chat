@@ -13,48 +13,30 @@ const Chat = () => {
     api: '/api/chat',
   });
   
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'end'
-      });
+  const scrollToLatestUserMessage = () => {
+    if (chatContainerRef.current) {
+      const userMessages = chatContainerRef.current.querySelectorAll('[data-role="user"]');
+      
+      if (userMessages.length > 0) {
+        const lastUserMessage = userMessages[userMessages.length - 1] as HTMLElement;
+        
+        lastUserMessage.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
     }
   };
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      scrollToBottom();
-    }, 0);
-    
-    return () => clearTimeout(timeoutId);
-  }, [messages]);
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      scrollToBottom();
-    });
-
-    if (chatContainerRef.current) {
-      observer.observe(chatContainerRef.current, {
-        childList: true,
-        subtree: true,
-        characterData: true
-      });
-    }
-
-    return () => observer.disconnect();
-  }, []);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
-      scrollToBottom();
       setTimeout(() => {
         handleSubmit(e);
+        // Scroll etter at meldingen er lagt til
+        setTimeout(scrollToLatestUserMessage, 200);
       }, 10);
     }
   };
@@ -63,11 +45,7 @@ const Chat = () => {
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
       <Header session={session} />
 
-      {status === 'submitted' && (
-        <div className="flex-1 flex items-center justify-center">
-            <p>Laster...</p>
-        </div>
-      )}
+
 
       {!session?.user && (
         <div className="flex-1 flex flex-col items-center justify-center text-center">
@@ -79,7 +57,7 @@ const Chat = () => {
 
       {session?.user && (
         <>
-          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-6 space-y-8">
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-6 space-y-8 relative">
             <div className="max-w-4xl mx-auto">
               {messages.length === 0 && (
                 <div className="text-center py-12">
@@ -90,7 +68,7 @@ const Chat = () => {
               )}
               
               {messages.map((m) => (
-                <div key={m.id} className={`flex py-1 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div key={m.id} className={`flex py-1 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`} data-role={m.role}>
                   <div className={`max-w-3xl p-4 rounded-2xl shadow-sm w-11/12 sm:w-3/4 ${
                     m.role === 'user' 
                       ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 
@@ -104,7 +82,9 @@ const Chat = () => {
                   </div>
                 </div>
               ))}
-              <div ref={messagesEndRef} />
+              
+              {/* Legg til plass under meldingene slik at siste melding kan scroller til toppen */}
+              <div className="h-screen"></div>
             </div>
           </div>
 
